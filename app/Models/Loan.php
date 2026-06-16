@@ -11,50 +11,36 @@ class Loan extends Model
     protected $fillable = [
         'user_id',
         'chama_id',
-        'principal_amount',
+        'amount',
         'interest_rate',
-        'repayment_months',
+        'term_months',
+        'approved_amount',
         'status',
-        'credit_score',
-        'rejection_reason',
-        'approved_by',
+        'reason',
         'approved_at',
-        'outstanding_balance',
-        'maturity_date',
-        // other fields
+        'repaid_at',
     ];
 
     protected $casts = [
-        'principal_amount' => 'decimal:2',
+        'amount' => 'decimal:2',
+        'approved_amount' => 'decimal:2',
         'interest_rate' => 'decimal:2',
-        'credit_score' => 'decimal:1',
-        'outstanding_balance' => 'decimal:2',
         'approved_at' => 'datetime',
-        'maturity_date' => 'date',
+        'repaid_at' => 'datetime',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function chama()
+    public function chama(): BelongsTo
     {
         return $this->belongsTo(Chama::class);
     }
 
-    public function repayments()
+    public function repayments(): HasMany
     {
         return $this->hasMany(Repayment::class);
-    }
-
-    public function amortizationSchedule()
-    {
-        return $this->hasMany(AmortizationSchedule::class);
-    }
-
-    public function approvedBy()
-    {
-        return $this->belongsTo(User::class, 'approved_by');
     }
 }

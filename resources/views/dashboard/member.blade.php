@@ -26,35 +26,38 @@
                     <div class="text-2xl font-bold text-yellow-600">Ksh {{ number_format($unpaidFines ?? 0, 2) }}</div>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-8">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <h3 class="font-semibold text-lg">Quick Actions</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <a href="{{ route('member.contributions') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
-                            ➕ Add Contribution
-                        </a>
-                        <button
-                            @if($canApplyForLoan ?? false)
-                                onclick="window.location.href='{{ route('member.loans') }}'"
-                            @else
-                                disabled
-                                title="{{ $loanIneligibilityReason ?? 'You have unpaid fines or an active loan' }}"
-                            @endif
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md {{ ($canApplyForLoan ?? false) ? '' : 'opacity-50 cursor-not-allowed' }}"
-                        >
-                            📝 Apply for Loan
-                        </button>
-                        <a href="{{ route('reports.member', auth()->user()) }}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
-                            📄 Download Statement
-                        </a>
-                    </div>
-                </div>
-                @if(!($canApplyForLoan ?? true))
-                    <p class="text-sm text-red-600 mt-2">⚠️ {{ $loanIneligibilityReason ?? 'You cannot apply for a loan at this time.' }}</p>
+<!-- Quick Actions -->
+<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <h3 class="font-semibold text-lg">Quick Actions</h3>
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ route('member.contributions') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
+                ➕ Add Contribution
+            </a>
+            <button
+                @if($canApplyForLoan ?? false)
+                    onclick="window.location.href='{{ route('member.loans') }}'"
+                @else
+                    disabled
+                    title="{{ $loanIneligibilityReason ?? 'You have unpaid fines or an active loan' }}"
                 @endif
-            </div>
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md {{ ($canApplyForLoan ?? false) ? '' : 'opacity-50 cursor-not-allowed' }}"
+            >
+                📝 Apply for Loan
+            </button>
+            <!-- ✅ NEW: My Loans Button -->
+            <a href="{{ route('member.loans') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
+                💰 My Loans
+            </a>
+            <a href="{{ route('reports.member', auth()->user()) }}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
+                📄 Download Statement
+            </a>
+        </div>
+    </div>
+    @if(!($canApplyForLoan ?? true))
+        <p class="text-sm text-red-600 mt-2">⚠️ {{ $loanIneligibilityReason ?? 'You cannot apply for a loan at this time.' }}</p>
+    @endif
+</div>
 
             <!-- Recent Transactions -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">

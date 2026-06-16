@@ -10,7 +10,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-semibold text-lg">Statement for {{ $user->name }}</h3>
-                    <a href="{{ route('reports.member', $user) }}" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition">📄 Download PDF</a>
+                    <a href="{{ route('reports.member', $user) }}?download=pdf" class="btn btn-primary">
+    📄 Download PDF Statement
+</a>
                 </div>
 
                 <!-- Summary Cards -->

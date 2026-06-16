@@ -14,8 +14,28 @@ class Chama extends Model
         'currency',
     ];
 
-    public function users(): HasMany
-    {
-        return $this->hasMany(User::class);
-    }
+   public function users()
+{
+    return $this->hasMany(User::class);
+}
+
+public function loans()
+{
+    return $this->hasMany(Loan::class);
+}
+
+public function contributions()
+{
+    return $this->hasMany(Contribution::class);
+}
+
+public function fines()
+{
+    return $this->hasMany(Fine::class);
+}
+
+public function meetings()
+{
+    return $this->hasMany(Meeting::class);
+}
 }

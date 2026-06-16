@@ -53,9 +53,9 @@
                     </table>
                 </div>
                 <div class="mt-4">
-                    <a href="{{ route('reports.treasurer') }}" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
-                        📄 Download Full Report (PDF)
-                    </a>
+                    <a href="{{ route('reports.treasurer') }}?download=pdf" class="btn btn-primary">
+    📄 Download Group Report (PDF)
+</a>
                 </div>
             </div>
         </div>

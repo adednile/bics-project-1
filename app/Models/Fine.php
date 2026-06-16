@@ -16,15 +16,15 @@ class Fine extends Model
         'due_date',
         'paid_at',
         'description',
+        'billing_cycle',
+        'reference_id',
+        'reference_type',   // ✅ added
     ];
 
     protected $casts = [
-        'late_penalty_flat' => 'decimal:2',
-    'interest_rate_pct' => 'decimal:2',
-    'min_credit_score' => 'decimal:1',
-    'savings_weight' => 'decimal:2',
-    'attendance_weight' => 'decimal:2',
-    'repayment_weight' => 'decimal:2',
+        'amount' => 'decimal:2',
+        'due_date' => 'date',
+        'paid_at' => 'date',
     ];
 
     public function user(): BelongsTo

@@ -18,11 +18,16 @@ class DemoTransactionSeeder extends Seeder
         $chama = Chama::query()->firstOrFail();
         $members = User::query()->where('role', 'member')->where('chama_id', $chama->id)->get();
 
+        if ($members->isEmpty()) {
+            $this->command->warn('No members found. Skipping demo transactions.');
+            return;
+        }
+
         foreach ($members as $member) {
             Contribution::create([
                 'user_id' => $member->id,
                 'chama_id' => $chama->id,
-                'amount' => 2000,
+                'amount' => 2000, // ✅ corrected: was 'repayment_amount'
                 'contribution_date' => now()->subDays(5)->toDateString(),
                 'source' => 'manual',
                 'reference' => 'demo-contrib',
@@ -32,7 +37,8 @@ class DemoTransactionSeeder extends Seeder
 
         $member = $members->first();
 
-        Loan::create([
+        // Create a loan (status 'pending' so it doesn't affect active loan checks)
+        $loan = Loan::create([
             'user_id' => $member->id,
             'chama_id' => $chama->id,
             'amount' => 10000,
@@ -43,12 +49,21 @@ class DemoTransactionSeeder extends Seeder
             'reason' => 'Demo loan application',
         ]);
 
+        // Create a repayment for the loan (use correct columns)
+        Repayment::create([
+            'loan_id' => $loan->id, // use the created loan's ID
+            'repayment_amount' => 3000,   // ✅ corrected: was 'amount'
+            'repayment_date' => now()->toDateString(), // ✅ corrected: was 'paid_at'
+            'remaining_balance' => 10000 - 3000,
+            'is_late' => false,
+        ]);
+
         Fine::create([
             'user_id' => $member->id,
             'chama_id' => $chama->id,
             'amount' => 100,
             'type' => 'late_contribution',
-            'status' => 'pending',
+            'status' => 'unpaid',
             'due_date' => now()->toDateString(),
             'description' => 'Demo fine',
         ]);
@@ -62,10 +77,6 @@ class DemoTransactionSeeder extends Seeder
             'status' => 'unmapped',
         ]);
 
-        Repayment::create([
-            'loan_id' => 1,
-            'amount' => 3000,
-            'paid_at' => now()->toDateString(),
-        ]);
+        $this->command->info('Demo transactions seeded successfully.');
     }
 }
