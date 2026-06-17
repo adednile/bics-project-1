@@ -124,7 +124,11 @@ private function generateAmortizationSchedule(Loan $loan): void
     $principal = $loan->amount;
     
     // Calculate EMI (Equated Monthly Installment)
-    $emi = $principal * $monthlyRate * pow(1 + $monthlyRate, $months) / (pow(1 + $monthlyRate, $months) - 1);
+    if ($monthlyRate > 0) {
+        $emi = $principal * $monthlyRate * pow(1 + $monthlyRate, $months) / (pow(1 + $monthlyRate, $months) - 1);
+    } else {
+        $emi = $principal / $months;
+    }
     
     $balance = $principal;
     $dueDate = Carbon::now()->addMonth();

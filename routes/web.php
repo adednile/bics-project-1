@@ -32,22 +32,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/member/loans', [LoanController::class, 'store'])->name('member.loans.store');
     Route::post('/member/loans/{loan}/repay', [LoanController::class, 'repay'])->name('member.loans.repay');
 
-    // Treasurer routes (consider adding role middleware for extra security)
-    Route::get('/treasurer/loans/pending', [LoanController::class, 'pending'])->name('treasurer.loans.pending');
+    // Treasurer routes (secured with role:treasurer middleware)
+    Route::middleware('role:treasurer')->group(function () {
+        Route::get('/treasurer/loans/pending', [LoanController::class, 'pending'])->name('treasurer.loans.pending');
+        Route::post('/treasurer/loans/{loan}/approve', [LoanController::class, 'approve'])->name('treasurer.loans.approve');
+        Route::post('/treasurer/loans/{loan}/reject', [LoanController::class, 'reject'])->name('treasurer.loans.reject');
 
-    // ✅ ADD THESE TWO LINES – missing approval/rejection routes
-    Route::post('/treasurer/loans/{loan}/approve', [LoanController::class, 'approve'])->name('treasurer.loans.approve');
-    Route::post('/treasurer/loans/{loan}/reject', [LoanController::class, 'reject'])->name('treasurer.loans.reject');
+        Route::get('/treasurer/penalties', [PenaltyController::class, 'index'])->name('treasurer.penalties');
+        Route::post('/treasurer/penalties/{fine}/mark-paid', [PenaltyController::class, 'markPaid'])->name('treasurer.penalties.markPaid');
 
-    Route::get('/treasurer/penalties', [PenaltyController::class, 'index'])->name('treasurer.penalties');
-    Route::post('/treasurer/penalties/{fine}/mark-paid', [PenaltyController::class, 'markPaid'])->name('treasurer.penalties.markPaid');
+        Route::get('/treasurer/sms-parser', [MpesaParserController::class, 'index'])->name('treasurer.sms-parser');
+        Route::post('/treasurer/sms-parser', [MpesaParserController::class, 'store'])->name('treasurer.sms-parser.store');
+        Route::post('/treasurer/sms-parser/{tx}/match', [MpesaParserController::class, 'match'])->name('treasurer.sms-parser.match');
+        Route::post('/treasurer/sms-parser/{tx}/reject', [MpesaParserController::class, 'reject'])->name('treasurer.sms-parser.reject');
 
-    Route::get('/treasurer/sms-parser', [MpesaParserController::class, 'index'])->name('treasurer.sms-parser');
-    Route::post('/treasurer/sms-parser', [MpesaParserController::class, 'store'])->name('treasurer.sms-parser.store');
+        Route::get('/reports/treasurer', [ReportController::class, 'treasurerReports'])->name('reports.treasurer');
+    });
 
-    // Report routes (member and treasurer)
+    // Report routes for members (and authorized treasurers)
     Route::get('/reports/member/{user}', [ReportController::class, 'memberStatement'])->name('reports.member');
-    Route::get('/reports/treasurer', [ReportController::class, 'treasurerReports'])->name('reports.treasurer');
 });
 
 require __DIR__.'/auth.php';

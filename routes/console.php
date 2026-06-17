@@ -15,5 +15,11 @@ Artisan::command('chama:penalties', function () {
     $this->call(CalculateDailyPenalties::class);
 })->purpose('Apply daily penalties');
 
-// ✅ ADD THIS: Schedule the command to run daily
+// Define the backup command
+Artisan::command('chama:backup', function () {
+    $this->call(\App\Console\Commands\BackupDatabase::class);
+})->purpose('Encrypt and back up database state');
+
+// ✅ Schedule the commands to run daily
 Schedule::command('chama:penalties')->daily();
+Schedule::command('chama:backup')->daily();

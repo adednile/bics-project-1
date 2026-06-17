@@ -9,6 +9,31 @@ use Carbon\Carbon;
 class CreditScoringEngine
 {
     /**
+     * Calculate credit score based on metrics array.
+     */
+    public function score(array $metrics): float|int
+    {
+        $savings = $metrics['savings_consistency'] ?? 0;
+        $repayment = $metrics['repayment_history'] ?? 0;
+        $attendance = $metrics['attendance'] ?? 0;
+        $duration = $metrics['membership_duration'] ?? 0;
+
+        $weights = [
+            'savings' => 0.4,
+            'repayment' => 0.3,
+            'attendance' => 0.2,
+            'duration' => 0.1,
+        ];
+
+        $score = ($savings * $weights['savings'])
+            + ($repayment * $weights['repayment'])
+            + ($attendance * $weights['attendance'])
+            + ($duration * $weights['duration']);
+
+        return (int) round($score);
+    }
+
+    /**
      * Calculate credit score for a user based on:
      * - Savings consistency (40%)
      * - Repayment history (30%)

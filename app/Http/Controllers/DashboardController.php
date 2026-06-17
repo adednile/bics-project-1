@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\DashboardService;
+use App\Services\CreditScoringEngine; // ✅ Add this
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +24,11 @@ class DashboardController extends Controller
 
         // Member
         $data = $dashboardService->getMemberData($user->id, $user->chama_id);
+
+        // ✅ Add credit score to the data array
+        $creditScore = (new CreditScoringEngine())->calculateScore($user);
+        $data['creditScore'] = $creditScore;
+
         return view('dashboard.member', $data);
     }
 }

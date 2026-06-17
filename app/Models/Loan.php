@@ -19,6 +19,11 @@ class Loan extends Model
         'reason',
         'approved_at',
         'repaid_at',
+        'credit_score',
+        'rejection_reason',
+        'outstanding_balance',
+        'maturity_date',
+        'approved_by',
     ];
 
     protected $casts = [

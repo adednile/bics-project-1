@@ -4,459 +4,408 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Chama Ledger') }} - Automated Financial Management for Kenyan Chamas</title>
+    <title>{{ config('app.name', 'Chama Gold') }} - Automated Financial Ledger & Loan Management</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700;800;900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0b0f19',
+                        dark: '#151d30',
+                        gold: {
+                            50: '#fefdf0',
+                            100: '#fefac2',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        brand: {
+                            navy: '#0b0f19',
+                            dark: '#151d30',
+                            gold: '#c59b27',
+                            goldlight: '#e5c060',
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            slate: '#334155'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        title: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        [x-cloak] { display: none !important; }
-
-        /* Gradient Hero */
-        .hero-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
         }
-
-        /* Floating animation */
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
+        .hero-bg {
+            background: radial-gradient(circle at 70% 30%, rgba(197, 155, 39, 0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 10% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
+                        #0b0f19;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        .premium-card {
+            background: rgba(21, 29, 48, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        /* Feature card hover */
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-        }
-
-        /* Stat counter */
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #f59e0b 0%, #c59b27 50%, #e5c060 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+        }
+        .gold-btn {
+            background: linear-gradient(135deg, #e5c060 0%, #c59b27 100%);
+            color: #0b0f19;
+            box-shadow: 0 4px 20px rgba(197, 155, 39, 0.25);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .gold-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+            box-shadow: 0 6px 24px rgba(197, 155, 39, 0.35);
+        }
+        .pulse-emerald {
+            animation: pulse-emerald-anim 2s infinite;
+        }
+        @keyframes pulse-emerald-anim {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+        }
+        .float-delayed {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
     </style>
 </head>
-<body class="antialiased bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100 fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <a href="/" class="flex items-center gap-2">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                                C
-                            </div>
-                            <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                Chama Ledger
-                            </span>
-                        </a>
-                    </div>
-                </div>
+<body class="font-sans antialiased selection:bg-gold-500/20 selection:text-gold-500">
 
-                <!-- Navigation Links -->
-                <div class="hidden md:flex items-center gap-6">
-                    <a href="#features" class="text-gray-600 hover:text-blue-600 transition font-medium">Features</a>
-                    <a href="#benefits" class="text-gray-600 hover:text-blue-600 transition font-medium">Benefits</a>
-                    <a href="#stats" class="text-gray-600 hover:text-blue-600 transition font-medium">Impact</a>
+    <!-- Header Navigation -->
+    <nav class="fixed w-full z-50 bg-brand-navy/80 backdrop-blur-md border-b border-white/5 transition-all">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-gold-500 to-gold-700 rounded-xl flex items-center justify-center text-brand-navy font-black text-xl shadow-lg">G</div>
+                <div>
+                    <span class="text-lg font-title font-extrabold text-white tracking-tight leading-none">Chama Gold</span>
+                    <p class="text-[9px] text-gold-500 font-bold tracking-widest uppercase mt-0.5">Wealth &amp; Trust</p>
                 </div>
+            </a>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
+                <a href="#features" class="hover:text-white transition">Platform Features</a>
+                <a href="#benefits" class="hover:text-white transition">Chama Benefits</a>
+                <a href="#stats" class="hover:text-white transition">Impact &amp; Security</a>
+            </div>
 
-                <!-- Auth Buttons -->
-                <div class="flex items-center gap-3">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition font-medium shadow-md hover:shadow-lg">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-600 transition font-medium">
-                                Log in
-                            </a>
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition font-medium shadow-md hover:shadow-lg">
-                                    Get Started
-                                </a>
-                            @endif
-                        @endauth
-                    @endif
-                </div>
+            <div class="flex items-center gap-4">
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="gold-btn px-6 py-2.5 rounded-xl font-bold text-sm">Dashboard</a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-slate-300 hover:text-white font-bold text-sm transition">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="gold-btn px-6 py-2.5 rounded-xl font-bold text-sm">Register Chama</a>
+                        @endif
+                    @endauth
+                @endif
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-gradient min-h-screen flex items-center pt-16 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Left Content -->
-                <div>
-                    <div class="inline-flex items-center gap-2 bg-blue-900/50 backdrop-blur-sm text-blue-300 px-4 py-2 rounded-full text-sm border border-blue-700/30 mb-6">
-                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        Trusted by Chamas across Kenya
-                    </div>
-
-                    <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                        <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                            Financial Management
-                        </span>
-                        <br/>
-                        Made Simple for Chamas
-                    </h1>
-
-                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
-                        Automate your Chama's ledger, loan management, and compliance tracking.
-                        <span class="text-blue-400 font-medium">No bank account required.</span>
-                    </p>
-
-                    <div class="flex flex-wrap gap-4">
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition shadow-xl hover:shadow-2xl transform hover:scale-105">
-                                Go to Dashboard →
-                            </a>
-                        @else
-                            <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-8 rounded-xl transition shadow-xl hover:shadow-2xl transform hover:scale-105">
-                                Start Free Today
-                            </a>
-                            <a href="#features" class="border border-white/20 hover:border-white/40 text-white font-medium py-3 px-8 rounded-xl transition">
-                                Learn More
-                            </a>
-                        @endauth
-                    </div>
-
-                    <!-- Trust Badges -->
-                    <div class="flex items-center gap-6 mt-8">
-                        <div class="flex -space-x-2">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white/20">J</div>
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white/20">M</div>
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white/20">A</div>
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white/20">S</div>
-                            <div class="w-8 h-8 rounded-full bg-gray-700 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold">+50</div>
-                        </div>
-                        <span class="text-gray-400 text-sm">Join 50+ Chamas already using the system</span>
-                    </div>
+    <section class="hero-bg min-h-screen flex items-center pt-24 overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-6 py-20 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            <div class="lg:col-span-7">
+                <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-gold-500 px-4 py-2 rounded-full text-xs font-semibold mb-6">
+                    <span class="w-2.5 h-2.5 bg-brand-emerald rounded-full pulse-emerald"></span>
+                    Smart Ledger System for Kenyan Chamas
+                </div>
+                <h1 class="text-4xl md:text-6xl font-title font-black text-white leading-[1.1] mb-6">
+                    Wealth Building, <br>
+                    <span class="gold-gradient-text">Automated &amp; Trusted.</span>
+                </h1>
+                <p class="text-lg text-slate-400 mb-8 max-w-xl leading-relaxed">
+                    Say goodbye to manual books, spreadsheets, and calculations. Automate your Chama’s ledger bookkeeping, credit scoring, late penalties, and M-Pesa SMS mapping.
+                </p>
+                
+                <div class="flex flex-wrap gap-4 items-center">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="gold-btn px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2">
+                            Go to Member Portal <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="gold-btn px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2">
+                            Register Your Group <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                        <a href="#features" class="border border-white/10 hover:border-white/20 bg-white/5 text-white px-8 py-4 rounded-xl font-semibold transition">
+                            Explore Features
+                        </a>
+                    @endauth
                 </div>
 
-                <!-- Right Content - Dashboard Mockup -->
-                <div class="relative">
-                    <div class="float-animation">
-                        <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10 shadow-2xl">
-                            <div class="bg-gray-900/50 rounded-xl p-4">
-                                <!-- Mock Dashboard -->
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-white text-sm font-medium">📊 Dashboard</span>
-                                    <span class="text-gray-400 text-xs">Chama: Nairobi United</span>
+                <div class="mt-12 flex items-center gap-8">
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-navy flex items-center justify-center font-bold text-slate-300 text-xs">AM</div>
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-navy flex items-center justify-center font-bold text-slate-300 text-xs">KW</div>
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-navy flex items-center justify-center font-bold text-slate-300 text-xs">JO</div>
+                        <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-brand-navy flex items-center justify-center font-bold text-slate-300 text-xs">SM</div>
+                    </div>
+                    <p class="text-xs text-slate-400 font-medium leading-relaxed">
+                        Helping <span class="text-white font-bold">50+ local savings circles</span> manage group liquidity, minimize delays, and secure member savings.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Visual Dashboard Preview -->
+            <div class="lg:col-span-5 relative">
+                <div class="float-delayed">
+                    <div class="premium-card rounded-2xl p-6 shadow-2xl relative overflow-hidden border border-white/5">
+                        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 to-gold-700"></div>
+                        
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-brand-rose"></span>
+                                <span class="w-3 h-3 rounded-full bg-gold-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-brand-emerald"></span>
+                            </div>
+                            <span class="text-[10px] bg-white/5 border border-white/10 text-slate-400 px-3 py-1 rounded-full font-bold">Live Preview</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                                <span class="text-xs text-slate-400 block mb-1">Chama Account Balance</span>
+                                <div class="flex justify-between items-end">
+                                    <span class="text-2xl font-title font-extrabold text-white">Ksh 1,248,500</span>
+                                    <span class="text-[10px] text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 px-2 py-0.5 rounded-full font-bold">+14.2%</span>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3 mb-4">
-                                    <div class="bg-blue-500/20 rounded-lg p-3">
-                                        <div class="text-gray-400 text-xs">Total Savings</div>
-                                        <div class="text-white font-bold">Ksh 1,245,000</div>
-                                    </div>
-                                    <div class="bg-green-500/20 rounded-lg p-3">
-                                        <div class="text-gray-400 text-xs">Active Loans</div>
-                                        <div class="text-white font-bold">Ksh 780,000</div>
-                                    </div>
-                                    <div class="bg-yellow-500/20 rounded-lg p-3">
-                                        <div class="text-gray-400 text-xs">Pending</div>
-                                        <div class="text-white font-bold">12</div>
-                                    </div>
-                                    <div class="bg-red-500/20 rounded-lg p-3">
-                                        <div class="text-gray-400 text-xs">Fines</div>
-                                        <div class="text-white font-bold">Ksh 24,500</div>
-                                    </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-white/5 rounded-xl p-3 border border-white/5">
+                                    <span class="text-[10px] text-slate-400 block mb-1">Active Loans</span>
+                                    <span class="text-sm font-bold text-white">Ksh 480,000</span>
                                 </div>
-                                <div class="bg-gray-800/50 rounded-lg p-3">
-                                    <div class="text-gray-400 text-xs mb-2">Recent Transactions</div>
-                                    <div class="space-y-1">
-                                        <div class="flex justify-between text-sm">
-                                            <span class="text-gray-300">John M.</span>
-                                            <span class="text-green-400">+Ksh 5,000</span>
-                                        </div>
-                                        <div class="flex justify-between text-sm">
-                                            <span class="text-gray-300">Mary A.</span>
-                                            <span class="text-green-400">+Ksh 10,000</span>
-                                        </div>
-                                        <div class="flex justify-between text-sm">
-                                            <span class="text-gray-300">Peter O.</span>
-                                            <span class="text-red-400">-Ksh 2,500</span>
-                                        </div>
+                                <div class="bg-white/5 rounded-xl p-3 border border-white/5">
+                                    <span class="text-[10px] text-slate-400 block mb-1">Credit Score</span>
+                                    <span class="text-sm font-bold text-gold-500">8.2 / 10</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white/5 rounded-xl p-4 border border-white/5">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-xs text-slate-300 font-semibold">Ledger Entries</span>
+                                    <span class="text-[10px] text-slate-500">M-Pesa Verified</span>
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                                        <span class="text-slate-400">Jane Kamau</span>
+                                        <span class="text-brand-emerald font-bold">+Ksh 10,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-400">Albert Mwangi</span>
+                                        <span class="text-brand-emerald font-bold">+Ksh 5,000</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Floating Badges -->
-                        <div class="absolute -top-6 -right-6 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
-                            🚀 M-Pesa Ready
-                        </div>
-                        <div class="absolute -bottom-6 -left-6 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                            🔒 Secure
-                        </div>
                     </div>
                 </div>
+
+                <!-- Glow Background Behind Card -->
+                <div class="absolute -z-10 w-48 h-48 bg-gold-600/10 rounded-full blur-[80px] -right-10 -bottom-10"></div>
+                <div class="absolute -z-10 w-36 h-36 bg-brand-emerald/5 rounded-full blur-[85px] -left-10 -top-10"></div>
             </div>
+
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-blue-600 font-semibold text-sm tracking-wider uppercase">Features</span>
-                <h2 class="text-4xl font-extrabold text-gray-900 mt-2">
-                    Everything You Need to Run Your Chama
+    <!-- Platform Modules Features -->
+    <section id="features" class="py-24 bg-brand-navy border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <span class="text-gold-500 text-xs font-bold uppercase tracking-widest">Platform Core Modules</span>
+                <h2 class="text-3xl md:text-5xl font-title font-black text-white mt-3 leading-tight">
+                    Powering Kenyan Chamas with Modern Financial Tools
                 </h2>
-                <p class="text-xl text-gray-500 mt-4 max-w-2xl mx-auto">
-                    Purpose-built for Kenyan Chamas, with features that automate and simplify your operations.
+                <p class="text-slate-400 mt-4 text-base">
+                    Align your operations with Kenyan constitution bylaws while removing errors, bookkeeping delays, and loan defaults.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        📱
+                <!-- Feature 1: M-Pesa Integration -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-gold-500/10 border border-gold-500/20 rounded-xl flex items-center justify-center text-gold-500 mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">sms</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">M-Pesa SMS Parser</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Automatically log contributions by pasting M-Pesa confirmation messages. No manual data entry required.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Automated M-Pesa Parsing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Say goodbye to manual ledger entries. Copy and paste confirmation SMS strings to dynamically parse names, phone numbers, transactional amounts, and references. Unmapped cash is routed to a review queue.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-green-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>98% accuracy</span>
-                    </div>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        📊
+                <!-- Feature 2: Credit Scoring -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-brand-emerald mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">calculate</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Credit Scoring Engine</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Fair, data-driven loan eligibility scoring using a weighted 1-10 point system. No more manual guesswork.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Rule-Based Credit Scoring</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Calculate dynamic member credit scores on a scale from 1 to 10. The score is computed using past savings consistency, meeting attendance records, and debt punctuality to keep borrow limits safe.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-purple-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>Fair & transparent</span>
-                    </div>
                 </div>
 
-                <!-- Feature 3 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        ⚠️
+                <!-- Feature 3: Automated Penalties -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center justify-center text-brand-rose mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">gavel</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Automated Penalty Engine</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Automatic fine calculation for late contributions and loan repayments. Enforce your Chama rules consistently.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Automatic Compliance & Fines</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Late contributions or delayed debt repayments trigger system compliance checks. Fines are calculated automatically, restricting further loan applications until penalties are fully cleared.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-green-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>No manual calculations</span>
-                    </div>
                 </div>
 
-                <!-- Feature 4 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        📄
+                <!-- Feature 4: PDF Financial Statements -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">picture_as_pdf</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">PDF Reports</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Generate professional member statements and group financial reports with one click. Perfect for meetings.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Formatted PDF Statements</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        One-click PDF downloads compiling member statements or group-wide financial metrics. Aggregates liquidity, loan exposures, default rates, and interest earnings, powered by DOMPdf.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-orange-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>Meeting ready</span>
-                    </div>
                 </div>
 
-                <!-- Feature 5 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        👥
+                <!-- Feature 5: Member Portals -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">person</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">Member Self-Service</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Members can view their balances, transaction history, and apply for loans without needing a treasurer.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Self-Service Portals</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Let member users view their individual savings, apply for loans, check repayments, track outstanding penalties, and manage profiles without booking manual treasurer time.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-red-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>24/7 access</span>
-                    </div>
                 </div>
 
-                <!-- Feature 6 -->
-                <div class="feature-card bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center text-2xl mb-4">
-                        🔒
+                <!-- Feature 6: Security & Double-Entry -->
+                <div class="premium-card p-8 rounded-2xl border border-white/5 shadow-lg relative group hover:border-gold-500/20 transition-all duration-300">
+                    <div class="w-12 h-12 bg-teal-500/10 border border-teal-500/20 rounded-xl flex items-center justify-center text-teal-400 mb-6 group-hover:scale-110 transition duration-300">
+                        <span class="material-symbols-outlined">security</span>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Bank Account Required</h3>
-                    <p class="text-gray-500 leading-relaxed">
-                        Works with any Chama setup. No mandatory bank integration. Your funds stay in your control.
+                    <h3 class="text-lg font-title font-bold text-white mb-2">Double-Entry Precision</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Zero-variance bookkeeping accuracy. Integrates explicitly cast database types (DECIMAL 10,2) to safeguard cash flow integrity and prevent float rounding vulnerabilities.
                     </p>
-                    <div class="mt-4 flex items-center gap-2 text-sm text-teal-600">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-                        <span>100% flexible</span>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Benefits Section -->
-    <section id="benefits" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <span class="text-blue-600 font-semibold text-sm tracking-wider uppercase">Why Choose Us</span>
-                <h2 class="text-4xl font-extrabold text-gray-900 mt-2">
-                    Built for Kenyan Chamas, by Kenyans
-                </h2>
-                <p class="text-xl text-gray-500 mt-4 max-w-2xl mx-auto">
-                    Designed specifically to address the challenges faced by informal savings groups.
-                </p>
+    <!-- Impact/Stats -->
+    <section id="stats" class="py-20 bg-brand-dark/50 border-t border-b border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <span class="text-4xl font-title font-black text-white block">Ksh 10B+</span>
+                <span class="text-xs text-gold-500 font-bold uppercase tracking-wider mt-1 block">Chama Capital in Kenya</span>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex gap-4">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">💰</div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 mb-1">Reduce Errors by 95%</h3>
-                        <p class="text-gray-500 text-sm">Eliminate manual arithmetic mistakes. Every transaction is recorded accurately.</p>
-                    </div>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex gap-4">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">👁️</div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 mb-1">Full Transparency</h3>
-                        <p class="text-gray-500 text-sm">Every member sees their own records. Trust is built through visibility.</p>
-                    </div>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex gap-4">
-                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">⏰</div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 mb-1">Save Hours of Work</h3>
-                        <p class="text-gray-500 text-sm">Treasurers spend less time reconciling and more time on strategic decisions.</p>
-                    </div>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex gap-4">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">📈</div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 mb-1">Better Loan Decisions</h3>
-                        <p class="text-gray-500 text-sm">Data-driven credit scoring ensures fair and objective loan approvals.</p>
-                    </div>
-                </div>
+            <div>
+                <span class="text-4xl font-title font-black text-white block">98.5%</span>
+                <span class="text-xs text-gold-500 font-bold uppercase tracking-wider mt-1 block">SMS Parse Accuracy</span>
+            </div>
+            <div>
+                <span class="text-4xl font-title font-black text-white block">&lt; 3s</span>
+                <span class="text-xs text-gold-500 font-bold uppercase tracking-wider mt-1 block">Transaction Booking</span>
+            </div>
+            <div>
+                <span class="text-4xl font-title font-black text-white block">100%</span>
+                <span class="text-xs text-gold-500 font-bold uppercase tracking-wider mt-1 block">Transparency Guarantee</span>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section id="stats" class="py-20 hero-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="stat-number">60%</div>
-                    <p class="text-gray-300 text-sm mt-1">Kenyan adults in Chamas</p>
-                </div>
-                <div class="text-center">
-                    <div class="stat-number">78%</div>
-                    <p class="text-gray-300 text-sm mt-1">Used manual ledgers</p>
-                </div>
-                <div class="text-center">
-                    <div class="stat-number">Ksh 10B+</div>
-                    <p class="text-gray-300 text-sm mt-1">Managed in Chamas annually</p>
-                </div>
-                <div class="text-center">
-                    <div class="stat-number">97%</div>
-                    <p class="text-gray-300 text-sm mt-1">Accuracy improvement</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-20 bg-white">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
-                Ready to Digitize Your Chama?
+    <!-- Platform CTA -->
+    <section class="py-24 bg-brand-navy relative">
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-title font-black text-white mb-4 leading-tight">
+                Empower Your Chama's <br>Financial Future.
             </h2>
-            <p class="text-xl text-gray-500 mb-8">
-                Join the revolution. Automate your Chama's financial management today.
+            <p class="text-slate-400 max-w-xl mx-auto mb-10 text-base leading-relaxed">
+                Reconcile ledger accounts instantly, evaluate loan eligibilities fairly, and generate professional sheets for your next group meeting.
             </p>
-            @auth
-                <a href="{{ route('dashboard') }}" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-xl transition shadow-xl hover:shadow-2xl transform hover:scale-105 inline-block">
-                    Go to Dashboard →
-                </a>
-            @else
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-xl transition shadow-xl hover:shadow-2xl transform hover:scale-105 inline-block">
-                        Get Started Free
+            
+            <div class="flex justify-center gap-4 flex-wrap">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="gold-btn px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2">
+                        Go to Dashboard <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </a>
-                    <a href="#features" class="border-2 border-gray-300 hover:border-blue-500 text-gray-700 hover:text-blue-600 font-bold py-4 px-12 rounded-xl transition inline-block">
-                        Learn More
+                @else
+                    <a href="{{ route('register') }}" class="gold-btn px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2">
+                        Register Your Chama <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </a>
-                </div>
-            @endauth
+                    <a href="#features" class="border border-white/10 hover:border-white/20 text-white px-8 py-4 rounded-xl font-semibold transition">
+                        Explore Features
+                    </a>
+                @endauth
+            </div>
         </div>
+        
+        <!-- Glow Backdrops -->
+        <div class="absolute -z-10 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                            C
-                        </div>
-                        <span class="text-xl font-bold text-white">Chama Ledger</span>
-                    </div>
-                    <p class="text-sm">Automated financial management for Kenyan Chamas. Built with ❤️ in Kenya.</p>
+    <footer class="bg-brand-navy border-t border-white/5 py-12 text-sm text-slate-500">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-br from-gold-500 to-gold-700 rounded-lg flex items-center justify-center text-brand-navy font-bold text-base">G</div>
+                    <span class="text-base font-title font-bold text-white tracking-wide">Chama Gold</span>
                 </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#features" class="hover:text-white transition">Features</a></li>
-                        <li><a href="#benefits" class="hover:text-white transition">Benefits</a></li>
-                        @auth
-                            <li><a href="{{ route('dashboard') }}" class="hover:text-white transition">Dashboard</a></li>
-                        @else
-                            <li><a href="{{ route('login') }}" class="hover:text-white transition">Login</a></li>
-                            <li><a href="{{ route('register') }}" class="hover:text-white transition">Register</a></li>
-                        @endauth
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Contact</h4>
-                    <p class="text-sm">Have questions? Reach out to your Chama administrator or support.</p>
-                    <div class="mt-4 flex gap-4">
-                        <a href="#" class="hover:text-white transition">📧</a>
-                        <a href="#" class="hover:text-white transition">🐦</a>
-                        <a href="#" class="hover:text-white transition">💬</a>
-                    </div>
-                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    A premium Web-Based Financial Ledger and Loan Management Platform designed specifically to meet the operational needs of Kenyan Chamas.
+                </p>
             </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
-                © {{ date('Y') }} Chama Ledger. All rights reserved. Made in Kenya 🇰🇪
+            
+            <div>
+                <h4 class="text-white font-semibold mb-4 text-xs uppercase tracking-wider">Useful Directory</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#features" class="hover:text-white transition">Platform Features</a></li>
+                    @auth
+                        <li><a href="{{ route('dashboard') }}" class="hover:text-white transition">My Dashboard</a></li>
+                    @else
+                        <li><a href="{{ route('login') }}" class="hover:text-white transition">Log in</a></li>
+                        <li><a href="{{ route('register') }}" class="hover:text-white transition">Create Chama</a></li>
+                    @endauth
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-semibold mb-4 text-xs uppercase tracking-wider">Compliance &amp; Safety</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Designed with high precision data types, secure ORM database bindings, hash encryptions, and strict role segregation.
+                </p>
+                <div class="mt-4 text-slate-400 font-bold text-[10px] uppercase tracking-widest">Made in Kenya 🇰🇪</div>
             </div>
         </div>
+        
+        <div class="max-w-7xl mx-auto px-6 border-t border-white/5 mt-8 pt-8 text-center text-xs text-slate-600">
+            © {{ date('Y') }} Chama Gold. All rights reserved.
+        </div>
     </footer>
+
 </body>
 </html>
