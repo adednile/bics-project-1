@@ -48,4 +48,10 @@ class Loan extends Model
     {
         return $this->hasMany(Repayment::class);
     }
+
+    public function amortizationSchedule(): HasMany
+    {
+        return $this->hasMany(AmortizationSchedule::class);
+    }
 }
+

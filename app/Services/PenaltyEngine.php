@@ -60,6 +60,7 @@ class PenaltyEngine
                             'description' => "Late contribution for " . Carbon::now()->format('F Y'),
                             'billing_cycle' => Carbon::now()->format('Y-m'),
                         ]);
+                        $user->update(['account_status' => 'overdue']);
                         $count++;
                     }
                 }
@@ -106,6 +107,7 @@ class PenaltyEngine
                             'reference_id' => $schedule->id,
                             'billing_cycle' => Carbon::now()->format('Y-m'),
                         ]);
+                        $loan->user->update(['account_status' => 'overdue']);
                         $count++;
                     }
                 }

@@ -63,6 +63,11 @@ class DashboardService
             ->where('status', 'active')
             ->first();
 
+        $pendingMpesa = \App\Models\MappedMpesaTransaction::where('user_id', $userId)
+            ->where('status', 'unmapped')
+            ->latest()
+            ->get();
+
         return [
             'savingsBalance'       => $savingsBalance,
             'loanLimit'            => $loanLimit,
@@ -72,6 +77,7 @@ class DashboardService
             'loanIneligibilityReason' => $loanIneligibilityReason,
             'recentTransactions'   => Transaction::where('user_id', $userId)->where('chama_id', $chamaId)->latest()->limit(20)->get(),
             'activeLoan'           => $activeLoan,
+            'pendingMpesa'         => $pendingMpesa,
         ];
     }
 }

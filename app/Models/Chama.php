@@ -12,6 +12,14 @@ class Chama extends Model
         'location',
         'description',
         'currency',
+        'contribution_target',
+        'collection_cutoff',
+        'late_penalty_flat',
+        'interest_rate_pct',
+        'min_credit_score',
+        'savings_weight',
+        'attendance_weight',
+        'repayment_weight',
     ];
 
    public function users()

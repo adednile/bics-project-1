@@ -7,6 +7,7 @@ use App\Http\Controllers\MpesaParserController;
 use App\Http\Controllers\PenaltyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ChamaConfigController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,14 +24,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Member routes
-    Route::get('/member/contributions', [ContributionController::class, 'index'])->name('member.contributions');
-    Route::post('/member/contributions', [ContributionController::class, 'store'])->name('member.contributions.store');
-    Route::post('/member/contributions/parse-sms', [ContributionController::class, 'parseSms'])->name('member.contributions.parseSms');
+    // Member routes (secured with role:member middleware)
+    Route::middleware('role:member')->group(function () {
+        Route::get('/member/contributions', [ContributionController::class, 'index'])->name('member.contributions');
+        Route::post('/member/contributions/parse-sms', [ContributionController::class, 'parseSms'])->name('member.contributions.parseSms');
 
-    Route::get('/member/loans', [LoanController::class, 'index'])->name('member.loans');
-    Route::post('/member/loans', [LoanController::class, 'store'])->name('member.loans.store');
-    Route::post('/member/loans/{loan}/repay', [LoanController::class, 'repay'])->name('member.loans.repay');
+        Route::get('/member/loans', [LoanController::class, 'index'])->name('member.loans');
+        Route::post('/member/loans', [LoanController::class, 'store'])->name('member.loans.store');
+    });
 
     // Treasurer routes (secured with role:treasurer middleware)
     Route::middleware('role:treasurer')->group(function () {
@@ -47,6 +48,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/treasurer/sms-parser/{tx}/reject', [MpesaParserController::class, 'reject'])->name('treasurer.sms-parser.reject');
 
         Route::get('/reports/treasurer', [ReportController::class, 'treasurerReports'])->name('reports.treasurer');
+
+        Route::get('/treasurer/chama/config', [ChamaConfigController::class, 'edit'])->name('treasurer.chama.config');
+        Route::post('/treasurer/chama/config', [ChamaConfigController::class, 'update'])->name('treasurer.chama.config.update');
     });
 
     // Report routes for members (and authorized treasurers)

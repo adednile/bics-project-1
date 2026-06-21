@@ -15,12 +15,36 @@ class LoanController extends Controller
 {
     public function index()
     {
+        $user  = Auth::user();
+        $chama = $user->chama;
+
         $loans = Loan::query()
-            ->where('chama_id', Auth::user()->chama_id)
+            ->where('user_id', $user->id)
+            ->where('chama_id', $user->chama_id)
             ->latest()
             ->get();
 
-        return view('Member.loan-application', compact('loans'));
+        // Replicate the same computation as DashboardService so the view has the right context.
+        $savingsBalance  = \App\Models\Transaction::where('user_id', $user->id)
+            ->where('chama_id', $user->chama_id)
+            ->where('type', 'contribution')
+            ->sum('amount');
+
+        $outstandingLoan = Loan::where('user_id', $user->id)
+            ->where('chama_id', $user->chama_id)
+            ->where('status', 'active')
+            ->sum('outstanding_balance');
+
+        $unpaidFines = \App\Models\Fine::where('user_id', $user->id)
+            ->where('chama_id', $user->chama_id)
+            ->where('status', 'pending')
+            ->sum('amount');
+
+        $loanLimit       = $savingsBalance * 3;
+        $canApplyForLoan = !($outstandingLoan > 0 || $unpaidFines > 0);
+        $interestRate    = $chama->interest_rate_pct ?? 5.00;
+
+        return view('Member.loan-application', compact('loans', 'loanLimit', 'canApplyForLoan', 'interestRate'));
     }
 
     public function store(Request $request, CreditScoringEngine $scoringEngine)
@@ -33,6 +57,10 @@ class LoanController extends Controller
 
     $user = Auth::user();
     $chama = $user->chama;
+
+    if ($user->account_status === 'overdue') {
+        return redirect()->back()->with('error', 'Loan request blocked: Your account status is Overdue. Please clear all outstanding penalties.');
+    }
 
     // ✅ Compute real credit score using the engine
     $score = $scoringEngine->calculateScore($user);

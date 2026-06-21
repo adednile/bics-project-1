@@ -28,32 +28,57 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            // Optionally validate chama_id if provided
+            'registration_type' => ['nullable', 'in:join,create'],
             'chama_id' => ['nullable', 'exists:chamas,id'],
+            'new_chama_name' => ['required_if:registration_type,create', 'nullable', 'string', 'max:255'],
         ]);
 
-        // Determine which Chama to assign:
-        // 1. If user selected one, use that.
-        // 2. Otherwise, get or create a default Chama.
-        if ($request->filled('chama_id')) {
-            $chama = Chama::findOrFail($request->chama_id);
+        $registrationType = $request->input('registration_type', 'join');
+        $role = 'member';
+        $chamaId = null;
+
+        if ($registrationType === 'create') {
+            $chama = Chama::create([
+                'name' => $request->new_chama_name,
+                'location' => 'Nairobi',
+                'currency' => 'KES',
+                'min_credit_score' => 5.0,
+                'interest_rate_pct' => 5.0,
+                'savings_weight' => 0.40,
+                'attendance_weight' => 0.20,
+                'repayment_weight' => 0.40,
+            ]);
+            $chamaId = $chama->id;
+            $role = 'treasurer';
         } else {
-            $chama = Chama::first();
-            if (!$chama) {
-                $chama = Chama::create([
-                    'name' => 'Default Chama',
-                    'location' => 'Nairobi',
-                    'currency' => 'KES',
-                ]);
+            if ($request->filled('chama_id')) {
+                $chamaId = $request->chama_id;
+            } else {
+                $chama = Chama::first();
+                if (!$chama) {
+                    $chama = Chama::create([
+                        'name' => 'Default Chama',
+                        'location' => 'Nairobi',
+                        'currency' => 'KES',
+                        'min_credit_score' => 5.0,
+                        'interest_rate_pct' => 5.0,
+                        'savings_weight' => 0.40,
+                        'attendance_weight' => 0.20,
+                        'repayment_weight' => 0.40,
+                    ]);
+                }
+                $chamaId = $chama->id;
             }
+            $role = 'member';
         }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'member', // default role
-            'chama_id' => $chama->id,
+            'role' => $role,
+            'chama_id' => $chamaId,
+            'account_status' => 'active',
         ]);
 
         event(new Registered($user));

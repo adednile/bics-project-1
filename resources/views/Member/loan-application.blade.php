@@ -1,170 +1,287 @@
 @extends('layouts.app')
-@section('title', 'Loan Application & Calculator')
+@section('title', 'Loan Facility')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-stack-lg max-w-container-max mx-auto">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="font-headline-xl text-headline-xl text-on-background">Loan Facility</h1>
+            <p class="text-on-surface-variant">Apply for a low-interest credit facility based on your Chama contributions.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded-full font-label-md flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">verified_user</span>
+                Credit Limit: Ksh {{ number_format($loanLimit ?? 0, 2) }}
+            </span>
+        </div>
+    </header>
 
-    {{-- Form Card --}}
-    <div class="premium-card rounded-2xl p-6 relative overflow-hidden">
-        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 to-gold-700"></div>
-        <h3 class="text-base font-bold font-title text-white mb-6 flex items-center gap-2">
-            <span class="material-symbols-outlined text-gold-500">edit_note</span> Apply for a Loan
-        </h3>
-        
-        <form method="POST" action="{{ route('member.loans.store') }}" x-data="loanCalculator()" x-init="init()">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="amount" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Requested Principal (Ksh)</label>
-                    <input type="number" step="0.01" name="amount" id="amount" x-model="amount" x-on:input="calculate()" required 
-                        class="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500 outline-none text-white text-sm transition-all"
-                        placeholder="e.g. 20000">
-                </div>
-                <div>
-                    <label for="term_months" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Repayment Period</label>
-                    <select name="term_months" id="term_months" x-model="term" x-on:change="calculate()" 
-                        class="w-full h-12 px-4 rounded-xl bg-[#151d30] border border-white/10 focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500 outline-none text-white text-sm transition-all">
-                        <option value="1">1 Month</option>
-                        <option value="3">3 Months</option>
-                        <option value="6">6 Months</option>
-                        <option value="12" selected>12 Months</option>
-                        <option value="18">18 Months</option>
-                        <option value="24">24 Months</option>
-                        <option value="36">36 Months</option>
-                    </select>
-                </div>
+    <!-- Two Column Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Loan Application Form (Left Column) -->
+        <section class="lg:col-span-7 bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-2 mb-6">
+                <span class="w-2 h-8 gold-gradient rounded-full"></span>
+                <h2 class="font-headline-md text-headline-md text-on-background">Apply for a Loan</h2>
             </div>
             
-            <div class="mt-6">
-                <label for="reason" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Purpose for Loan</label>
-                <textarea name="reason" id="reason" rows="2" required 
-                    class="w-full p-4 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500 outline-none text-white text-sm transition-all" 
-                    placeholder="Briefly state the reason or utility of this loan request..."></textarea>
-            </div>
+            <form action="{{ route('member.loans.store') }}" method="POST" class="space-y-6">
+                @csrf
+                <div class="space-y-2">
+                    <label class="font-label-md text-on-surface-variant" for="principal">Principal Amount (Ksh)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">Ksh</span>
+                        <input class="w-full pl-14 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all font-headline-md outline-none" 
+                               id="principal" name="amount" placeholder="0.00" step="1000" type="number" value="50000" required/>
+                    </div>
+                    <p class="text-[12px] text-on-surface-variant">Minimum: Ksh 5,000 | Maximum: Ksh {{ number_format($loanLimit ?? 0, 2) }}</p>
+                    @error('amount')
+                        <p class="text-error text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            {{-- EMI Calculation Preview --}}
-            <div class="mt-6 p-6 bg-brand-navy/60 border border-white/5 rounded-xl text-slate-300" x-show="amount > 0 && term > 0" x-cloak>
-                <h4 class="font-bold text-sm mb-4 flex items-center gap-1 text-white font-title">
-                    <span class="material-symbols-outlined text-gold-500 text-base">calculate</span> Calculated Product Summary
-                </h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white/5 p-4 rounded-xl text-center border border-white/5">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Monthly Repayment (EMI)</span>
-                        <p class="text-xl font-title font-black text-gold-500 mt-1" x-text="'Ksh ' + monthly_repayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})"></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="font-label-md text-on-surface-variant" for="period">Repayment Period</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" 
+                                id="period" name="term_months" required>
+                            <option value="1">1 Month</option>
+                            <option value="3">3 Months</option>
+                            <option selected value="6">6 Months</option>
+                            <option value="12">12 Months</option>
+                            <option value="18">18 Months</option>
+                            <option value="24">24 Months</option>
+                            <option value="36">36 Months</option>
+                        </select>
+                        @error('term_months')
+                            <p class="text-error text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
-                    <div class="bg-white/5 p-4 rounded-xl text-center border border-white/5">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Interest Charged (5%)</span>
-                        <p class="text-xl font-title font-black text-rose-400 mt-1" x-text="'Ksh ' + total_interest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})"></p>
+                    <div class="space-y-2">
+                        <label class="font-label-md text-on-surface-variant">Interest Rate (Fixed)</label>
+                        <div class="px-4 py-3 bg-slate-100 border border-slate-200 rounded-lg text-on-surface font-semibold flex items-center justify-between">
+                            <span>{{ number_format($interestRate ?? 5.00, 1) }}% Per Annum</span>
+                            <span class="material-symbols-outlined text-primary">info</span>
+                        </div>
                     </div>
-                    <div class="bg-white/5 p-4 rounded-xl text-center border border-white/5">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Repayment Amount</span>
-                        <p class="text-xl font-title font-black text-brand-emerald mt-1" x-text="'Ksh ' + total_repayment.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="font-label-md text-on-surface-variant" for="notes">Purpose/Notes</label>
+                    <textarea class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none resize-none" 
+                              id="notes" name="reason" placeholder="Explain the purpose of the loan..." rows="3" required></textarea>
+                    @error('reason')
+                        <p class="text-error text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex items-start gap-3 p-4 bg-surface-container-low rounded-lg border border-slate-100">
+                    <input class="mt-1 w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary" id="terms" type="checkbox" required/>
+                    <label class="text-label-md text-on-surface-variant leading-tight" for="terms">
+                        I confirm that I have read and agree to the <a class="text-primary font-semibold underline decoration-primary/30 hover:decoration-primary" href="#">Chama Bylaws Agreement</a> regarding loan disbursements and interest defaults.
+                    </label>
+                </div>
+
+                @if($canApplyForLoan ?? true)
+                <button class="w-full gold-gradient text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-primary-fixed/20 transition-all flex items-center justify-center gap-3 text-lg" type="submit">
+                    Apply for Disbursement
+                    <span class="material-symbols-outlined">trending_flat</span>
+                </button>
+                @else
+                <button class="w-full bg-slate-300 text-slate-500 font-bold py-4 rounded-xl shadow-none cursor-not-allowed flex items-center justify-center gap-3 text-lg" type="button" disabled>
+                    <span class="material-symbols-outlined">lock</span>
+                    Application Locked (Clear Penalties)
+                </button>
+                @endif
+            </form>
+        </section>
+
+        <!-- Live EMI Preview Panel (Right Column) -->
+        <aside class="lg:col-span-5 space-y-6">
+            <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm sticky top-24">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="font-headline-md text-headline-md text-on-background">Repayment Preview</h2>
+                    <span class="material-symbols-outlined text-primary-fixed-dim scale-150">calculate</span>
+                </div>
+                <div class="space-y-8">
+                    <div class="text-center p-6 rounded-2xl bg-primary-fixed/10 border border-primary-fixed/20">
+                        <p class="text-label-md text-on-surface-variant font-medium uppercase tracking-widest mb-1">Estimated Monthly Payment</p>
+                        <h3 class="text-[40px] font-extrabold text-primary leading-none" id="preview-emi">Ksh 0.00</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-rose-50 border border-rose-100">
+                            <p class="text-label-sm text-rose-800 font-semibold mb-1">Total Interest</p>
+                            <p class="text-headline-md font-bold text-rose-600" id="preview-interest">Ksh 0.00</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                            <p class="text-label-sm text-emerald-800 font-semibold mb-1">Total Repayment</p>
+                            <p class="text-headline-md font-bold text-emerald-600" id="preview-total">Ksh 0.00</p>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-6">
+                        <h4 class="text-label-md font-bold text-on-background mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            Disbursement Timeline
+                        </h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center justify-between text-sm">
+                                <span class="text-on-surface-variant">Application Review</span>
+                                <span class="text-on-surface font-medium">Within 24 Hours</span>
+                            </li>
+                            <li class="flex items-center justify-between text-sm">
+                                <span class="text-on-surface-variant">Member Consensus</span>
+                                <span class="text-on-surface font-medium">Not Required (Automated)</span>
+                            </li>
+                            <li class="flex items-center justify-between text-sm">
+                                <span class="text-on-surface-variant">M-Pesa Payout</span>
+                                <span class="text-on-surface font-medium">Instant after approval</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-
-            <div class="mt-6 flex items-center gap-3">
-                <input type="checkbox" id="terms" required class="w-4.5 h-4.5 bg-white/5 border-white/10 rounded text-gold-500 focus:ring-gold-500/30">
-                <label for="terms" class="text-xs text-slate-400">I confirm that all inputted details are valid and I consent to the terms of the <a href="#" class="text-gold-500 underline hover:text-gold-600">Kenyan Chama Bylaws Agreement</a>.</label>
+            <!-- Subtle Help Card -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm text-primary">
+                    <span class="material-symbols-outlined">support_agent</span>
+                </div>
+                <div>
+                    <p class="font-label-md text-on-surface font-bold">Need a higher limit?</p>
+                    <p class="text-sm text-on-surface-variant">Increase your monthly contributions to unlock larger loan facilities.</p>
+                </div>
             </div>
-
-            <div class="mt-6">
-                <button type="submit" class="gold-gradient-btn px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 text-sm shadow-md">
-                    <span class="material-symbols-outlined text-sm font-bold">send</span> Apply for Disbursement
-                </button>
-            </div>
-        </form>
+        </aside>
     </div>
 
-    {{-- Loan History List --}}
-    <div class="premium-card rounded-2xl overflow-hidden">
-        <div class="px-6 py-5 border-b border-white/5">
-            <h3 class="text-sm font-bold font-title text-white">Your Loan Request Records</h3>
+    <!-- Application History Table -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h2 class="font-headline-md text-headline-md text-on-background">Application History</h2>
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-sm">search</span>
+                    <input class="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-1 focus:ring-primary outline-none" id="searchHistory" placeholder="Search loans..." type="text"/>
+                </div>
+            </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-white/5 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-white/5">
+            <table class="w-full text-left" id="loansHistoryTable">
+                <thead class="bg-slate-50 text-on-surface-variant font-label-sm uppercase tracking-wider">
                     <tr>
                         <th class="px-6 py-4">Application Date</th>
-                        <th class="px-6 py-4">Principal Amount</th>
-                        <th class="px-6 py-4">Current Status</th>
-                        <th class="px-6 py-4">Term Period</th>
-                        <th class="px-6 py-4 text-right">Repayment Action</th>
+                        <th class="px-6 py-4">Principal</th>
+                        <th class="px-6 py-4">Term</th>
+                        <th class="px-6 py-4">Status</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5 text-slate-300">
+                <tbody class="divide-y divide-slate-100">
                     @forelse($loans ?? [] as $loan)
-                    <tr class="hover:bg-white/5 transition align-middle">
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $loan->created_at->format('d/m/Y') }}</td>
-                        <td class="px-6 py-4 font-bold text-white whitespace-nowrap">Ksh {{ number_format($loan->amount, 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $statusColor = $loan->status === 'active' ? 'text-brand-emerald bg-brand-emerald/10 border-brand-emerald/20' : 
-                                               ($loan->status === 'pending' ? 'text-gold-500 bg-gold-500/10 border-gold-500/20' : 
-                                               ($loan->status === 'completed' ? 'text-slate-400 bg-white/5 border border-white/10' : 'text-brand-rose bg-brand-rose/10 border-brand-rose/20'));
-                            @endphp
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $statusColor }}">
-                                {{ ucfirst($loan->status) }}
-                            </span>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="font-medium text-on-surface">{{ $loan->created_at->format('M d, Y') }}</div>
+                            <div class="text-xs text-on-surface-variant font-mono">REF: LOAN-{{ $loan->id }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $loan->term_months }} months</td>
-                        <td class="px-6 py-4 text-right whitespace-nowrap">
-                            @if($loan->status === 'active')
-                                <form method="POST" action="{{ route('member.loans.repay', $loan) }}" class="inline-flex items-center gap-2 justify-end">
-                                    @csrf
-                                    <input type="number" name="amount" placeholder="Amount" required
-                                        class="w-28 h-9 px-3 rounded-xl bg-white/5 border border-white/10 focus:ring-1 focus:ring-gold-500 focus:border-gold-500 outline-none text-xs text-white">
-                                    <button type="submit" class="bg-brand-emerald text-brand-navy px-3.5 py-1.5 rounded-xl text-xs font-bold transition hover:opacity-90">
-                                        Repay
-                                    </button>
-                                </form>
-                            @else
-                                <span class="text-slate-500 text-xs">—</span>
-                            @endif
+                        <td class="px-6 py-4 font-semibold text-on-surface">Ksh {{ number_format($loan->amount, 2) }}</td>
+                        <td class="px-6 py-4 text-on-surface-variant">{{ $loan->term_months }} Months</td>
+                        <td class="px-6 py-4">
+                            @php
+                                $statusColors = [
+                                    'active'    => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                    'pending'   => 'bg-amber-100 text-amber-800 border-amber-200',
+                                    'completed' => 'bg-slate-100 text-slate-700 border-slate-200',
+                                    'rejected'  => 'bg-rose-100 text-rose-800 border-rose-200',
+                                ];
+                                $colorClass = $statusColors[$loan->status] ?? 'bg-slate-100 text-slate-700';
+                            @endphp
+                            <div class="flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full text-[12px] font-bold border {{ $colorClass }}">
+                                    {{ ucfirst($loan->status) }}
+                                </span>
+                                @if($loan->status === 'rejected')
+                                <span class="material-symbols-outlined text-rose-400 text-base cursor-help"
+                                      title="{{ $loan->rejection_reason ?? 'Rejected by treasurer' }}">error_outline</span>
+                                @endif
+                                @if($loan->status === 'active')
+                                <span class="text-[10px] text-slate-400 italic">Repay via SMS Parser</span>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-slate-500">
-                            <span class="material-symbols-outlined text-3xl block mb-2 opacity-50">receipt_long</span>
-                            No loan application history found.
+                        <td colspan="4" class="px-6 py-8 text-center text-slate-400">
+                            <span class="material-symbols-outlined text-3xl block mb-2 opacity-50 font-light">history_edu</span>
+                            No loan history available.
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 @push('scripts')
 <script>
-    function loanCalculator() {
-        return {
-            amount: 0,
-            term: 12,
-            monthly_repayment: 0,
-            total_interest: 0,
-            total_repayment: 0,
-            calculate() {
-                if (this.amount > 0 && this.term > 0) {
-                    const principal = parseFloat(this.amount);
-                    const months = parseInt(this.term);
-                    const rate = 0.05; // 5% annual
-                    const monthlyRate = rate / 12;
-                    const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-                    this.monthly_repayment = emi || 0;
-                    this.total_repayment = emi * months;
-                    this.total_interest = this.total_repayment - principal;
-                } else {
-                    this.monthly_repayment = 0;
-                    this.total_interest = 0;
-                    this.total_repayment = 0;
-                }
-            },
-            init() { this.calculate(); }
+    // Reducing balance calculation formula matching the backend
+    const principalInput = document.getElementById('principal');
+    const periodSelect = document.getElementById('period');
+    
+    const emiDisplay = document.getElementById('preview-emi');
+    const interestDisplay = document.getElementById('preview-interest');
+    const totalDisplay = document.getElementById('preview-total');
+
+    const ANNUAL_RATE = {{ ($interestRate ?? 5.00) / 100 }}; // chama configured interest rate
+
+    function calculateLoan() {
+        const P = parseFloat(principalInput.value) || 0;
+        const N = parseInt(periodSelect.value) || 1;
+        
+        if (P <= 0) {
+            emiDisplay.innerText = 'Ksh 0.00';
+            interestDisplay.innerText = 'Ksh 0.00';
+            totalDisplay.innerText = 'Ksh 0.00';
+            return;
         }
+
+        const monthlyRate = ANNUAL_RATE / 12;
+        
+        // Reducing balance EMI formula: P * r * (1+r)^N / ((1+r)^N - 1)
+        const emi = P * monthlyRate * Math.pow(1 + monthlyRate, N) / (Math.pow(1 + monthlyRate, N) - 1);
+        const totalRepayment = emi * N;
+        const totalInterest = totalRepayment - P;
+
+        // Update UI with Kenyan formatting
+        const formatter = new Intl.NumberFormat('en-KE', {
+            style: 'currency',
+            currency: 'KES',
+            minimumFractionDigits: 2
+        });
+
+        emiDisplay.innerText = formatter.format(emi).replace('KES', 'Ksh');
+        interestDisplay.innerText = formatter.format(totalInterest).replace('KES', 'Ksh');
+        totalDisplay.innerText = formatter.format(totalRepayment).replace('KES', 'Ksh');
     }
+
+    principalInput.addEventListener('input', calculateLoan);
+    periodSelect.addEventListener('change', calculateLoan);
+
+    // Initial Calculation
+    calculateLoan();
+
+    // Table Search filter
+    document.getElementById('searchHistory').addEventListener('keyup', function() {
+        const value = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#loansHistoryTable tbody tr');
+        rows.forEach(row => {
+            if(row.innerText.toLowerCase().indexOf(value) > -1) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
 </script>
 @endpush
 @endsection
